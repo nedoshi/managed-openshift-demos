@@ -1,6 +1,6 @@
 variable "openshift_version" {
   type        = string
-  default     = "4.16.4"
+  default     = "4.19.4"
   description = "Desired version of OpenShift for the cluster, for example '4.1.0'. If version is greater than the currently running version, an upgrade will be scheduled."
 }
 
@@ -15,7 +15,8 @@ variable "additional_tags" {
   default = {
     Terraform   = "true"
     Environment = "dev"
-    TFOwner     = "mobb@redhat.com"
+    cost-center = "468"
+    Owner       = "nedoshi@redhat.com"
   }
   description = "Additional AWS resource tags"
   type        = map(string)
@@ -64,6 +65,21 @@ variable "max_replicas" {
   default     = 3
 }
 
+variable "bastion_public_ssh_key" {
+  description = <<EOF
+  Location to an SSH public key file on the local system which is used to provide connectivity to the bastion host
+  when the 'private' variable is set to 'true'.
+  EOF
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}
+
+variable "bastion_public_ip" {
+  description = "Should the Bastion have a public ip?"
+  type        = bool
+  default     = false
+}
+
 variable "proxy" {
   default     = null
   description = "cluster-wide HTTP or HTTPS proxy settings"
@@ -84,7 +100,7 @@ variable "private_cluster" {
 variable "vpc_name" {
   type        = string
   description = "VPC Name"
-  default     = "mobb-tf-vpc"
+  default     = "nedoshi-tf-vpc"
 }
 
 variable "vpc_cidr_block" {
@@ -109,4 +125,23 @@ variable "single_nat_gateway" {
   type        = bool
   description = "Single NAT or per NAT for subnet"
   default     = false
+}
+
+variable "token" {
+  type        = string
+  description = "The token for the RHCS provider"
+  default     = null
+}
+
+
+variable "client_id" {
+  type        = string
+  description = "The client id for the RHCS provider"
+  default     = null
+}
+
+variable "client_secret" {
+  type        = string
+  description = "The client secret for the RHCS provider"
+  default     = null
 }

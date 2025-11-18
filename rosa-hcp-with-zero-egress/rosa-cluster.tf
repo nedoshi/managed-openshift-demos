@@ -1,9 +1,28 @@
 data "aws_availability_zones" "available" {}
 
-locals {
+/*locals {
   # Extract availability zone names for the specified region, limit it to 3 if multi az or 1 if single
   region_azs = var.multi_az ? slice([for zone in data.aws_availability_zones.available.names : format("%s", zone)], 0, 3) : slice([for zone in data.aws_availability_zones.available.names : format("%s", zone)], 0, 1)
 }
+*/
+locals {
+  standard_azs = [
+    for zone in data.aws_availability_zones.available.names :
+    zone if can(regex("^${data.aws_region.current.id}[a-z]$", zone))
+  ]
+
+  max_az_count = var.multi_az ? 3 : 1
+
+  region_azs = slice(
+    local.standard_azs,
+    0,
+    min(length(local.standard_azs), local.max_az_count)
+  )
+}
+
+
+
+
 
 resource "random_string" "random_name" {
   length  = 6
