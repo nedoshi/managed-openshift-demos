@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nr-secret
+  namespace: user-a-namespace # Repeat for user-b-namespace
+type: Opaque
+stringData:
+  # This is your New Relic Ingest License Key
+  license-key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxNRAL"
+---
+apiVersion: observability.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: user-a-logs
+  namespace: user-a-namespace
+spec:
+  serviceAccount:
+    name: "log-collector"
+  outputs:
+    - name: newrelic
+      type: http
+      http:
+        method: POST
+        contentType: application/json
+        url: https://log-api.newrelic.com/log/v1
+      secret:
+        name: nr-secret
+  pipelines:
+    - name: my-app-logs
+      inputRefs: [ application ]
+      outputRefs: [ newrelic ]
