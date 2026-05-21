@@ -4,9 +4,14 @@ resource "azurerm_redhat_openshift_cluster" "aro" {
   resource_group_name = azurerm_resource_group.aro.name
   tags                = var.tags
 
+  lifecycle {
+    # Ensure cluster is replaced before dependent resources during updates
+    create_before_destroy = false
+  }
+
   cluster_profile {
     domain      = "${var.cluster_name}.${var.domain}"
-    version     = var.cluster_version
+    version     = var.openshift_version
     pull_secret = var.pull_secret
   }
 
@@ -43,4 +48,20 @@ resource "azurerm_redhat_openshift_cluster" "aro" {
 
 output "console_url" {
   value = azurerm_redhat_openshift_cluster.aro.console_url
+}
+
+resource "azurerm_dns_a_record" "api" {
+  name                = "api.${var.cluster_name}"
+  zone_name           = "azure-emea.mobb.cloud"
+  resource_group_name = "shared-services"
+  ttl                 = 300
+  records             = [azurerm_redhat_openshift_cluster.aro.api_server_profile[0].ip_address]
+}
+
+resource "azurerm_dns_a_record" "apps" {
+  name                = "*.apps.${var.cluster_name}"
+  zone_name           = "azure-emea.mobb.cloud"
+  resource_group_name = "shared-services"
+  ttl                 = 300
+  records             = [azurerm_redhat_openshift_cluster.aro.ingress_profile[0].ip_address]
 }

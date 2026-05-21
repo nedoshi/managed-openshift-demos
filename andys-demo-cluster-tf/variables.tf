@@ -1,6 +1,12 @@
-variable "openshift_version" {
+variable "rosa_openshift_version" {
   type        = string
   default     = "4.20.11"
+  description = "Desired version of OpenShift for the cluster, for example '4.1.0'. If version is greater than the currently running version, an upgrade will be scheduled."
+}
+
+variable "aro_openshift_version" {
+  type        = string
+  default     = "4.20.15"
   description = "Desired version of OpenShift for the cluster, for example '4.1.0'. If version is greater than the currently running version, an upgrade will be scheduled."
 }
 
@@ -32,7 +38,7 @@ variable "cluster_name" {
 }
 
 variable "tags" {
-  default = {}
+  default     = {}
   description = "Additional AWS resource tags"
   type        = map(string)
 }
@@ -177,3 +183,13 @@ variable "domain" {
   type        = string
   description = "The domain for the ARO cluster to use"
 }
+
+variable "pull_secret_path" {
+  type        = string
+  default     = null
+  description = <<EOF
+  Pull Secret for the ARO cluster
+  Default null
+  EOF
+}
+

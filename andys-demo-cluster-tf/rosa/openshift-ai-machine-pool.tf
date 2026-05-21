@@ -8,7 +8,7 @@ module "rosa-ai-machine-pool" {
   openshift_version = var.openshift_version
 
   aws_node_pool = {
-    instance_type = "m5.xlarge"
+    instance_type = "p5.4xlarge"
     tags          = var.default_aws_tags
   }
 
