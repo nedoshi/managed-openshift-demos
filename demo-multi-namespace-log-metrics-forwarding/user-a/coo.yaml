@@ -1,0 +1,11 @@
+apiVersion: monitoring.rhobs/v1alpha1
+kind: MonitoringStack
+metadata:
+  name: user-a-metrics
+  namespace: user-a-namespace
+spec:
+  prometheusConfig:
+    remoteWrite:
+      - url: "https://metric-api.newrelic.com/prometheus/v1/write"
+        authorization:
+          credentials: { name: nr-secret, key: license-key }

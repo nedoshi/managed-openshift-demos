@@ -32,13 +32,13 @@ variable "pull_secret" {
   EOF
 }
 
-variable "cluster_version" {
+variable "openshift_version" {
   type        = string
   description = <<EOF
   ARO version
   Default "4.16.30"
   EOF
-  default     = "4.16.30"
+  default     = "4.20.15"
 }
 
 variable "domain" {
